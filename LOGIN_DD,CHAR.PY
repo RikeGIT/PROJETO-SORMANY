@@ -70,12 +70,15 @@ class BackEnd():
         self.verifica_dados = self.cursor.fetchone() #percorrendo a Tabela de usuarios
 
         try:
-            if(self.username_login in self.verifica_dados and self.senha_login in self.verifica_dados):
-                messagebox.showinfo(title="Sistemas de Login", message=f"Parabéns {self.username_login}\nLogin feito com sucesso")
+            if self.username_login in self.verifica_dados and self.senha_login in self.verifica_dados:
+                messagebox.showinfo(title="Sistema de Login", message=f"Parabéns {self.username_login}\nLogin feito com sucesso")
+                self.homepage()
                 self.desconecta_db()
                 self.limpar_entry_login()
+            else:
+                messagebox.showerror(title="Sistema de login", message="Login inválido")
+                self.desconecta_db()
         except:
-            messagebox.showerror(title="Sistema de login", message="Login invalido")
             self.desconecta_db()
 
 class App(ctk.CTk, BackEnd):
@@ -85,7 +88,6 @@ class App(ctk.CTk, BackEnd):
         self.configurar_janela_inicial()
         self.tela_login()
         self.criar_tabela()
-    
     def Cores(self):
         self.c1 = "#000000"  # preto
         self.c2 = "#FFFFFF"  # branco                                                       
@@ -103,14 +105,15 @@ class App(ctk.CTk, BackEnd):
         self.attributes('-fullscreen', True)
         
     def tela_login(self):
+        # Frame GERAL
+        self.tela_frame = ctk.CTkFrame(self, width= 1920, height= 1080)
+        self.tela_frame.place(x = 0, y = 0)
         # BACKGROUND
         self.background_img = PhotoImage(file = "imagens\POHA-PFVR.png")
-        self.back_img = ctk.CTkLabel(self, text=None, image= self.background_img)
+        self.back_img = ctk.CTkLabel(self.tela_frame, text=None, image= self.background_img)
         self.back_img.grid(row = 1, column = 0,)
-        
         # FRAME LOGIN
-
-        self.login_frame = ctk.CTkFrame(self, width=400, height=353, border_width= 2, border_color= self.c1, fg_color = "#FFD8BB" )
+        self.login_frame = ctk.CTkFrame(self.tela_frame, width=400, height=353, border_width= 2, border_color= self.c1, fg_color = "#FFD8BB" )
         self.login_frame.place(x = 930, y = 358)
 
         # WIDGETS V
@@ -138,7 +141,6 @@ class App(ctk.CTk, BackEnd):
 
         self.criar_conta = ctk.CTkButton(self.login_frame, text="CRIAR CONTA", font=("PtSerif", 12), fg_color=self.c6, border_color=self.c1, hover_color="#3E0101", border_width= 3, width=150, height=39, corner_radius= 15, command= self.tela_de_cadastro)
         self.criar_conta.place(x = 123, y = 289)
-
     def tela_de_cadastro(self):
         # REMOVENDO TELA DE LOGIN
         self.login_frame.place_forget()
@@ -177,6 +179,31 @@ class App(ctk.CTk, BackEnd):
 
         self.voltar = ctk.CTkButton(self.registro_frame, text="VOLTAR", font=("PtSerif", 12), fg_color=self.c6, border_color=self.c1, hover_color="#3E0101", border_width= 3, width=150, height=39, corner_radius= 15, command= self.voltar_login)
         self.voltar.place(x = 125, y = 364)
+    def homepage(self):
+        self.tela_frame.destroy()
+        # FRAME PRINCIPAL HOMEPAGE
+        self.frame_homepage = ctk.CTkEntry(self, width= 1920, height= 1080)
+        self.frame_homepage.place(x = 0, y = 0)
+        # BACKGROUND IMAGE
+        self.background_homepage = PhotoImage(file ="imagens\HOMEPAGE.png")
+        self.label_homepage = ctk.CTkLabel(self.frame_homepage,text= None, image= self.background_homepage)
+        self.label_homepage.grid(row = 0, column = 0)
+
+        #  TEXTOS/BOTOES
+
+            #menu
+        self.menu_texto = ctk.CTkLabel(self.frame_homepage, text="Menu", font=("PT Serif", 22), bg_color= "#e4ccac")
+        self.menu_texto.place(x = 71, y = 170)
+            #guia
+        self.guia_texto = ctk.CTkLabel(self.frame_homepage, text="Guia de classes", font=("PT Serif", 20), bg_color= "#e4ccac")
+        self.guia_texto.place(x = 71, y = 240)
+            #Criar personagens
+        self.criar_texto = ctk.CTkLabel(self.frame_homepage, text="Criar personagens", font=("PT Serif", 20), bg_color= "#e4ccac")
+        self.criar_texto.place(x = 71, y = 315)
+            #Meus personagens
+        self.Meus_personagens_texto = ctk.CTkLabel(self.frame_homepage, text="Meus\npersonagens", font=("PT Serif", 20), bg_color= "#ecd4b4")
+        self.Meus_personagens_texto.place(x = 71, y = 374)
+
     def voltar_login(self):
         self.registro_frame.place_forget()
         self.tela_login()
@@ -188,7 +215,6 @@ class App(ctk.CTk, BackEnd):
     def limpar_entry_login(self):
         self.user.delete(0, END)
         self.senha.delete(0, END)
-
 if __name__ == "__main__":
     app = App()
     app.mainloop()
